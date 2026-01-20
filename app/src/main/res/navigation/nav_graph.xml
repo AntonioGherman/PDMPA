@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:startDestination="@id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.example.inventorymanager.ui.home.HomeFragment"
+        android:label="Home" />
+
+    <fragment
+        android:id="@+id/nav_stock"
+        android:name="com.example.inventorymanager.ui.stock.StockFragment"
+        android:label="Stock" />
+
+    <fragment
+        android:id="@+id/nav_alerts"
+        android:name="com.example.inventorymanager.ui.alerts.AlertsFragment"
+        android:label="Alerts" />
+
+    <fragment
+        android:id="@+id/nav_sales"
+        android:name="com.example.inventorymanager.ui.sales.SalesFragment"
+        android:label="Sales" />
+
+    <fragment
+        android:id="@+id/nav_suppliers"
+        android:name="com.example.inventorymanager.ui.supplier.SupplierFragment"
+        android:label="Suppliers" />
+
+</navigation>
