@@ -15,6 +15,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.inventorymanager.ui.dialogs.add.AddProductDialog;
 import com.example.inventorymanager.ui.dialogs.scan.ScanBarcodeDialog;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -34,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         ImageButton btnScan = topBar.findViewById(R.id.btnFilter);
 
         btnAdd.setOnClickListener(v -> {
-            // acțiune globală (ex: adăugare produs)
+           new AddProductDialog().show(getSupportFragmentManager(),"AddProductDialog");
         });
 
         btnScan.setOnClickListener(v -> {

@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- ================= HEADER ================= -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add New Product"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#000000" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/btnClose"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentEnd="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_close"
+                android:tint="#9E9E9E" />
+        </RelativeLayout>
+
+        <!-- ================= PRODUCT NAME ================= -->
+        <TextView
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Product Name" />
+
+        <EditText
+            android:id="@+id/etName"
+            style="@style/Input"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:hint="Product name" />
+
+        <!-- ================= SKU + BARCODE ================= -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
+
+            <!-- SKU -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/Label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SKU" />
+
+                <EditText
+                    android:id="@+id/etSku"
+                    style="@style/Input"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:hint="SKU" />
+            </LinearLayout>
+
+            <!-- SPACE -->
+            <View
+                android:layout_width="12dp"
+                android:layout_height="1dp" />
+
+            <!-- BARCODE -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/Label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Barcode" />
+
+                <EditText
+                    android:id="@+id/etBarcode"
+                    style="@style/Input"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:hint="Barcode" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ================= SCAN BARCODE (DISABLED FOR NOW) ================= -->
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/btnScanBarcode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Scan barcode (coming soon)"
+            android:textSize="13sp"
+            android:textColor="#000000"
+            android:alpha="0.5"
+            android:padding="6dp" />
+
+        <!-- ================= CATEGORY ================= -->
+        <TextView
+            style="@style/Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Category" />
+
+        <EditText
+            android:id="@+id/etCategory"
+            style="@style/Input"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:hint="Category" />
+
+        <!-- ================= QUANTITY + MIN STOCK ================= -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
+
+            <!-- QUANTITY -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/Label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Quantity" />
+
+                <EditText
+                    android:id="@+id/etQuantity"
+                    style="@style/Input"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:inputType="number"
+                    android:text="0" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="12dp"
+                android:layout_height="1dp" />
+
+            <!-- MIN STOCK -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/Label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Min Stock" />
+
+                <EditText
+                    android:id="@+id/etMinStock"
+                    style="@style/Input"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:inputType="number"
+                    android:text="0" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ================= COST + PRICE ================= -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
+
+            <!-- COST -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/Label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cost" />
+
+                <EditText
+                    android:id="@+id/etCost"
+                    style="@style/Input"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:inputType="numberDecimal"
+                    android:text="0" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="12dp"
+                android:layout_height="1dp" />
+
+            <!-- PRICE -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/Label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Price" />
+
+                <EditText
+                    android:id="@+id/etPrice"
+                    style="@style/Input"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:inputType="numberDecimal"
+                    android:text="0" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <View
+            android:layout_width="12dp"
+            android:layout_height="10dp" />
+
+
+        <!-- ================= SUPPLIER ================= -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilSupplier"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <AutoCompleteTextView
+                android:id="@+id/etSupplier"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:hint="Select supplier"
+                android:textSize="12sp"
+                android:inputType="none"
+                android:focusable="false"
+                android:background="@null"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <View
+            android:layout_width="12dp"
+            android:layout_height="5dp" />
+
+        <!-- ================= Stores ================= -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilStore"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <AutoCompleteTextView
+                android:id="@+id/etStore"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:hint="Select Store"
+                android:textSize="12sp"
+                android:inputType="none"
+                android:focusable="false"
+                android:background="@null"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <View
+            android:layout_width="12dp"
+            android:layout_height="10dp" />
+
+        <!-- ================= BUTTONS ================= -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCancel"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:text="Cancel"
+            android:textColor="#000000"
+            android:textAllCaps="false"
+            app:backgroundTint="#D5D5D5"
+            app:strokeColor="#E0E0E0"
+            app:strokeWidth="1dp"
+            app:cornerRadius="12dp"/>
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAdd"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_marginTop="12dp"
+            android:text="Add"
+            android:textColor="#FFFFFF"
+            android:textAllCaps="false"
+            app:backgroundTint="#000000"
+            app:cornerRadius="12dp"/>
+
+
+
+    </LinearLayout>
+</ScrollView>
