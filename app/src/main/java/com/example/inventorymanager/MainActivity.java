@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.CameraSelector;
+import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
@@ -19,6 +20,10 @@ import com.example.inventorymanager.ui.dialogs.add.AddProductDialog;
 import com.example.inventorymanager.ui.dialogs.scan.ScanBarcodeDialog;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.common.util.concurrent.ListenableFuture;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,12 +39,14 @@ public class MainActivity extends AppCompatActivity {
         ImageButton btnAdd = topBar.findViewById(R.id.btnAdd);
         ImageButton btnScan = topBar.findViewById(R.id.btnFilter);
 
+        cameraExecutor = Executors.newSingleThreadExecutor();
+
         btnAdd.setOnClickListener(v -> {
            new AddProductDialog().show(getSupportFragmentManager(),"AddProductDialog");
         });
 
         btnScan.setOnClickListener(v -> {
-            new ScanBarcodeDialog().show(
+             ScanBarcodeDialog.newInstance(false).show(
                     getSupportFragmentManager(),
                     "ScanBarcodeDialog"
             );
@@ -55,44 +62,18 @@ public class MainActivity extends AppCompatActivity {
 
         NavigationUI.setupWithNavController(bottomNav, navController);
     }
+    private ExecutorService cameraExecutor;
 
-    private ProcessCameraProvider cameraProvider;
-    private Preview preview;
-
-    public void startCamera(PreviewView previewView, Runnable onCameraReady) {
-        if (cameraProvider != null) return;
-
-        ListenableFuture<ProcessCameraProvider> future =
-                ProcessCameraProvider.getInstance(this);
-
-        future.addListener(() -> {
-            try {
-                cameraProvider = future.get();
-
-                Preview preview = new Preview.Builder().build();
-                preview.setSurfaceProvider(previewView.getSurfaceProvider());
-
-                cameraProvider.unbindAll();
-                cameraProvider.bindToLifecycle(
-                        this,
-                        CameraSelector.DEFAULT_BACK_CAMERA,
-                        preview
-                );
-
-                // 🔔 CAMERA ESTE GATA
-                runOnUiThread(onCameraReady);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }, ContextCompat.getMainExecutor(this));
+    public ExecutorService getCameraExecutor() {
+        return cameraExecutor;
     }
 
-
-    public void stopCamera() {
-        if (cameraProvider != null) {
-            cameraProvider.unbindAll();
-            cameraProvider = null;
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (cameraExecutor != null) {
+            cameraExecutor.shutdown();
         }
     }
+
 }

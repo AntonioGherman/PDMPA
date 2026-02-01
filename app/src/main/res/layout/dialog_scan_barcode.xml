@@ -44,6 +44,7 @@
             android:id="@+id/previewView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:implementationMode="performance"
             android:scaleType="fitCenter"/>
 
         <!-- LOADING -->
@@ -59,7 +60,11 @@
 
 
 
-
+    <LinearLayout
+        android:id="@+id/searchContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
     <!-- SKU INPUT -->
     <EditText
         android:id="@+id/etSku"
@@ -86,4 +91,5 @@
         app:backgroundTint="#000000"
         app:cornerRadius="12dp"/>
 
+    </LinearLayout>
 </LinearLayout>

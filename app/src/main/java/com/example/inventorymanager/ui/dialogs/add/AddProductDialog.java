@@ -6,23 +6,37 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.inventorymanager.R;
+import com.example.inventorymanager.data.model.Product;
+import com.example.inventorymanager.data.repository.ProductRepository;
 import com.example.inventorymanager.ui.dialogs.scan.ScanBarcodeDialog;
+import com.example.inventorymanager.util.ToastUtils;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.button.MaterialButton;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class AddProductDialog extends BottomSheetDialogFragment {
 
+    // ================= UI =================
+    private EditText etName;
+    private EditText etSku;
     private EditText etBarcode;
+    private EditText etPrice;
+    private EditText etMinStock;
+    private  EditText etQuantity;
+    private AutoCompleteTextView  etCategory;
+    private AutoCompleteTextView etSupplier;
+    private AutoCompleteTextView etStore;
 
     @Nullable
     @Override
@@ -33,16 +47,56 @@ public class AddProductDialog extends BottomSheetDialogFragment {
 
         View view = inflater.inflate(R.layout.dialog_add_product, container, false);
 
-        //etBarcode = view.findViewById(R.id.etBarcode);
-        //TextView btnScanBarcode = view.findViewById(R.id.btnScanBarcode);
+        // ================= FIND VIEWS =================
+        etName = view.findViewById(R.id.etName);
+        etSku = view.findViewById(R.id.etSku);
+        etBarcode = view.findViewById(R.id.etBarcode);
+        etCategory = view.findViewById(R.id.etCategory);
+        etPrice = view.findViewById(R.id.etPrice);
+        etMinStock = view.findViewById(R.id.etMinStock);
+
+        etSupplier = view.findViewById(R.id.etSupplier);
+        etStore = view.findViewById(R.id.etStore);
+
+        etQuantity = view.findViewById(R.id.etQuantity);
+
         ImageButton btnClose = view.findViewById(R.id.btnClose);
+        MaterialButton btnAdd = view.findViewById(R.id.btnAdd);
+        ImageButton btnScanBarcode = view.findViewById(R.id.btnScanBarcode);
 
+
+        Button btnCancel = view.findViewById(R.id.btnCancel);
         btnClose.setOnClickListener(v -> dismiss());
+        btnCancel.setOnClickListener(v -> dismiss());
 
-        AutoCompleteTextView etSupplier = view.findViewById(R.id.etSupplier);
-        AutoCompleteTextView etStores = view.findViewById(R.id.etStore);
+        setupDropdowns();
+        setupCategoryDropdown();
 
-// 🔹 hardcoded values (temporar)
+        btnAdd.setOnClickListener(v -> saveProduct());
+
+        btnScanBarcode.setOnClickListener(v -> {
+
+            ScanBarcodeDialog dialog = ScanBarcodeDialog.newInstance(true);
+
+            dialog.setOnBarcodeScannedListener(barcode -> {
+                etBarcode.setText(barcode);
+                etBarcode.setSelection(barcode.length());
+            });
+
+            dialog.show(
+                    getParentFragmentManager(),
+                    "ScanBarDialog"
+            );
+        });
+
+
+
+        return view;
+    }
+
+    // ================= DROPDOWNS =================
+    private void setupDropdowns() {
+
         List<String> suppliers = Arrays.asList(
                 "Supplier A",
                 "Supplier B",
@@ -55,28 +109,84 @@ public class AddProductDialog extends BottomSheetDialogFragment {
                 "Store 3"
         );
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+        ArrayAdapter<String> supplierAdapter = new ArrayAdapter<>(
                 requireContext(),
                 android.R.layout.simple_list_item_1,
                 suppliers
         );
 
-        etSupplier.setAdapter(adapter);
-
-       adapter = new ArrayAdapter<>(
+        ArrayAdapter<String> storeAdapter = new ArrayAdapter<>(
                 requireContext(),
                 android.R.layout.simple_list_item_1,
                 stores
         );
-        etStores.setAdapter(adapter);
 
-
-
-        //btnScanBarcode.setOnClickListener(v -> openScanDialog());
-
-        return view;
+        etSupplier.setAdapter(supplierAdapter);
+        etStore.setAdapter(storeAdapter);
     }
 
+    // ================= SAVE PRODUCT =================
+    private void saveProduct() {
+
+        String name = etName.getText().toString().trim();
+        String sku = etSku.getText().toString().trim();
+
+        if (name.isEmpty()) {
+            etName.setError("Required");
+            return;
+        }
+
+        if (sku.isEmpty()) {
+            etSku.setError("Required");
+            return;
+        }
+
+        double price;
+        int minStock;
+        int quantity;
+
+        try {
+            price = Double.parseDouble(etPrice.getText().toString());
+            minStock = Integer.parseInt(etMinStock.getText().toString());
+            System.out.println("Quantity: {" +etQuantity.getText().toString()+ "}");
+            quantity = Integer.parseInt(etQuantity.getText().toString());
+            System.out.println("Int Quantity: " + quantity);
+        } catch (Exception e) {
+            etPrice.setError("Invalid");
+            return;
+        }
+
+        Product product = new Product(
+                name,
+                sku,
+                etBarcode.getText().toString(),
+                etCategory.getText().toString().trim(),
+                price,
+                quantity,
+                minStock,
+                "supplier_temp_id",
+                etSupplier.getText().toString()
+        );
+
+        System.out.println(product.toString());
+
+        new ProductRepository().addProduct(
+                product,
+                () -> {
+                    ToastUtils.showSuccess(
+                            requireContext(),
+                            "Product added successfully"
+                    );
+                    dismiss();
+                },
+                () -> ToastUtils.showError(
+                        requireContext(),
+                        "Failed to add product"
+                )
+        );
+    }
+
+    // ================= BOTTOM SHEET FULL =================
     @Override
     public void onStart() {
         super.onStart();
@@ -97,12 +207,23 @@ public class AddProductDialog extends BottomSheetDialogFragment {
         behavior.setSkipCollapsed(true);
     }
 
+    private void setupCategoryDropdown() {
 
-    private void openScanDialog() {
-//        ScanBarcodeDialog dialog = new ScanBarcodeDialog();
-////        dialog.setOnBarcodeScannedListener(barcode -> {
-////            etBarcode.setText(barcode);
-////        });
-//        dialog.show(getParentFragmentManager(), "ScanBarcodeDialog");
+        List<String> categories = Arrays.asList(
+                "Beverages",
+                "Dairy",
+                "Snacks",
+                "Cleaning",
+                "Frozen"
+        );
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                requireContext(),
+                android.R.layout.simple_list_item_1,
+                categories
+        );
+
+        etCategory.setAdapter(adapter);
     }
+
 }
