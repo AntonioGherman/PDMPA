@@ -1,6 +1,10 @@
 package com.example.inventorymanager.data.model;
 
-public class Product {
+import com.example.inventorymanager.ui.alerts.StockStatus;
+
+import java.io.Serializable;
+
+public class Product implements Serializable {
 
     private String id;          // Firestore document ID
     private String name;
@@ -13,6 +17,8 @@ public class Product {
     private String supplierId;
     private String supplierName;
     private long createdAt;
+
+    private String stockStatus;
 
     // 🔹 OBLIGATORIU pentru Firestore
     public Product() {
@@ -39,6 +45,8 @@ public class Product {
         this.supplierId = supplierId;
         this.supplierName = supplierName;
         this.createdAt = System.currentTimeMillis();
+
+        this.stockStatus = calculateStatus(this).toString();
     }
 
     // ===== GETTERS & SETTERS =====
@@ -91,6 +99,8 @@ public class Product {
         return quantity;
     }
 
+    public String getStockStatus() {return stockStatus;}
+
     @Override
     public String toString() {
         return "Product{" +
@@ -107,4 +117,18 @@ public class Product {
                 ", createdAt=" + createdAt +
                 '}';
     }
+
+    private StockStatus calculateStatus(Product p) {
+
+        if (p.getQuantity() <= p.getMinStock()) {
+            return StockStatus.CRITICAL;
+        }
+
+        if (p.getQuantity() <= 10 + p.getMinStock()) {
+            return StockStatus.WARNING;
+        }
+
+        return StockStatus.OK;
+    }
+
 }

@@ -78,7 +78,7 @@ public class AddProductDialog extends BottomSheetDialogFragment {
 
             ScanBarcodeDialog dialog = ScanBarcodeDialog.newInstance(true);
 
-            dialog.setOnBarcodeScannedListener(barcode -> {
+            dialog.setOnBarcodeScannedListener((barcode, type) -> {
                 etBarcode.setText(barcode);
                 etBarcode.setSelection(barcode.length());
             });

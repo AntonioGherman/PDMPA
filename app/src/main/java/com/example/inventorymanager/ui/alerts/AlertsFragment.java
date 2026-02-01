@@ -2,65 +2,110 @@ package com.example.inventorymanager.ui.alerts;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.inventorymanager.R;
+import com.example.inventorymanager.data.model.Product;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AlertsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.List;
+
 public class AlertsFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private RecyclerView rvCritical, rvWarning;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public AlertsFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AlertsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static AlertsFragment newInstance(String param1, String param2) {
-        AlertsFragment fragment = new AlertsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
+
+        View v = inflater.inflate(R.layout.fragment_alerts, container, false);
+
+        setupSection(
+                v.findViewById(R.id.sectionCritical),
+                "Critical – Immediate Action",
+                R.drawable.ic_alert_r,
+                StockStatus.CRITICAL
+        );
+
+        setupSection(
+                v.findViewById(R.id.sectionWarning),
+                "Warning – Stock Running Low",
+                R.drawable.ic_warning_o,
+                StockStatus.WARNING
+        );
+
+        return v;
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_alerts, container, false);
+    private void setupSection(
+            View section,
+            String title,
+            int icon,
+            StockStatus status) {
+
+        TextView tvTitle = section.findViewById(R.id.tvTitle);
+        ImageView ivIcon = section.findViewById(R.id.ivIcon);
+        ImageView ivChevron = section.findViewById(R.id.ivChevron);
+        RecyclerView rv = section.findViewById(R.id.rvAlerts);
+
+        tvTitle.setText(title);
+        ivIcon.setImageResource(icon);
+
+        rv.setLayoutManager(new LinearLayoutManager(requireContext()));
+
+        rv.setVisibility(View.VISIBLE);
+
+        section.findViewById(R.id.header).setOnClickListener(v -> {
+            boolean visible = rv.getVisibility() == View.VISIBLE;
+            rv.setVisibility(visible ? View.GONE : View.VISIBLE);
+            ivChevron.setRotation(visible ? 0 : 180);
+        });
+
+        loadAlerts(rv, status);
+    }
+
+    private void loadAlerts(RecyclerView rv, StockStatus status) {
+
+        FirebaseFirestore.getInstance()
+                .collection("products")
+                .get()
+                .addOnSuccessListener(snapshot -> {
+
+                    List<Product> list = new ArrayList<>();
+
+                    for (DocumentSnapshot doc : snapshot) {
+                        Product p = doc.toObject(Product.class);
+
+                        if (p == null) continue;
+
+                        if (status == StockStatus.CRITICAL &&
+                                p.getQuantity() <= p.getMinStock()) {
+                            list.add(p);
+                        }
+
+                        if (status == StockStatus.WARNING &&
+                                p.getQuantity() > p.getMinStock() &&
+                                p.getQuantity() <= 10 + p.getMinStock()) {
+                            list.add(p);
+                        }
+                    }
+
+                    rv.setAdapter(new AlertsAdapter(list, status));
+                });
     }
 }

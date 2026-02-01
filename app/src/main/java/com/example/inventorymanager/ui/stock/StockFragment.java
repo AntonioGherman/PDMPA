@@ -1,5 +1,6 @@
 package com.example.inventorymanager.ui.stock;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -46,36 +48,29 @@ public class StockFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_stock, container, false);
 
-        // ---------- RecyclerView ----------
         RecyclerView rv = v.findViewById(R.id.rvProducts);
         rv.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        adapter = new StockAdapter(filteredProducts);
+        adapter = new StockAdapter(filteredProducts, this::confirmDelete);
         rv.setAdapter(adapter);
 
         emptyState = v.findViewById(R.id.emptyState);
 
-        // ---------- Search ----------
         etSearch = v.findViewById(R.id.etSearch);
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
                 filterProducts();
             }
-
             @Override public void afterTextChanged(Editable s) {}
         });
 
-        // ---------- Category ----------
         etCategory = v.findViewById(R.id.etCategory);
         etCategory.setOnItemClickListener((parent, view, position, id) -> {
             selectedCategory = etCategory.getText().toString();
             filterProducts();
         });
 
-        // ---------- Firebase ----------
         FirebaseFirestore.getInstance()
                 .collection("products")
                 .addSnapshotListener((snap, e) -> {
@@ -86,6 +81,7 @@ public class StockFragment extends Fragment {
                         for (DocumentSnapshot d : snap) {
                             Product p = d.toObject(Product.class);
                             if (p != null) {
+                                p.setId(d.getId()); // IMPORTANT
                                 allProducts.add(p);
                             }
                         }
@@ -98,7 +94,32 @@ public class StockFragment extends Fragment {
         return v;
     }
 
-    // ================= CATEGORIES =================
+    private void confirmDelete(Product product) {
+
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Delete product")
+                .setMessage("Are you sure you want to delete \"" + product.getName() + "\"?")
+                .setPositiveButton("Delete", (d, w) -> deleteProduct(product))
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void deleteProduct(Product product) {
+
+        FirebaseFirestore.getInstance()
+                .collection("products")
+                .document(product.getId())
+                .delete()
+                .addOnSuccessListener(unused ->
+                        Toast.makeText(requireContext(),
+                                "Product deleted",
+                                Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e ->
+                        Toast.makeText(requireContext(),
+                                "Delete failed",
+                                Toast.LENGTH_SHORT).show());
+    }
+
     private void setupCategoriesFromProducts() {
 
         Set<String> categorySet = new HashSet<>();
@@ -122,7 +143,6 @@ public class StockFragment extends Fragment {
 
         etCategory.setAdapter(adapterCategory);
 
-        // păstrează selecția dacă există
         if (!categories.contains(selectedCategory)) {
             selectedCategory = "All Categories";
         }
@@ -130,11 +150,9 @@ public class StockFragment extends Fragment {
         etCategory.setText(selectedCategory, false);
     }
 
-    // ================= FILTER =================
     private void filterProducts() {
 
         filteredProducts.clear();
-
         String query = etSearch.getText().toString().toLowerCase().trim();
 
         for (Product p : allProducts) {
@@ -158,8 +176,6 @@ public class StockFragment extends Fragment {
         }
 
         adapter.notifyDataSetChanged();
-
-        // empty state
         emptyState.setVisibility(
                 filteredProducts.isEmpty() ? View.VISIBLE : View.GONE
         );

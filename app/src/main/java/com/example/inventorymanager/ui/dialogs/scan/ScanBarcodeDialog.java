@@ -4,8 +4,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,8 +22,12 @@ import androidx.core.content.ContextCompat;
 
 import com.example.inventorymanager.MainActivity;
 import com.example.inventorymanager.R;
+import com.example.inventorymanager.data.model.Product;
+import com.example.inventorymanager.util.ScanType;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.mlkit.vision.barcode.BarcodeScanner;
 import com.google.mlkit.vision.barcode.BarcodeScanning;
 import com.google.mlkit.vision.barcode.common.Barcode;
@@ -41,6 +47,8 @@ public class ScanBarcodeDialog extends BottomSheetDialogFragment {
     private ProcessCameraProvider cameraProvider;
     private ExecutorService cameraExecutor;
     private boolean isScanning = false;
+    private EditText etSku;
+    private View btnSearch;
 
 
     public void setOnBarcodeScannedListener(OnBarcodeScannedListener listener) {
@@ -92,6 +100,34 @@ public class ScanBarcodeDialog extends BottomSheetDialogFragment {
         btnClose.setOnClickListener(v -> {
             dismiss();
         });
+
+        etSku = view.findViewById(R.id.etSku);
+        btnSearch = view.findViewById(R.id.btnSearch);
+
+        btnSearch.setOnClickListener(v -> {
+
+            String sku = etSku.getText().toString().trim();
+
+            if (sku.isEmpty()) {
+                Toast.makeText(
+                        requireContext(),
+                        "Please enter a SKU",
+                        Toast.LENGTH_SHORT
+                ).show();
+                return;
+            }
+
+            if (isScanning) return;
+            isScanning = true;
+
+            if (listener != null) {
+                listener.onBarcodeScanned(sku, ScanType.SKU);
+            }
+
+            dismissAllowingStateLoss();
+        });
+
+
         return view;
     }
 
@@ -155,7 +191,8 @@ public class ScanBarcodeDialog extends BottomSheetDialogFragment {
 
                                         if (listener != null) {
                                             listener.onBarcodeScanned(
-                                                    barcode.getRawValue()
+                                                    barcode.getRawValue(),
+                                                    ScanType.BARCODE
                                             );
                                         }
 
@@ -182,48 +219,6 @@ public class ScanBarcodeDialog extends BottomSheetDialogFragment {
             }
         }, ContextCompat.getMainExecutor(requireContext()));
     }
-
-
-    @OptIn(markerClass = ExperimentalGetImage.class)
-    private void bindBarcodeAnalyzer(ImageAnalysis imageAnalysis) {
-
-        BarcodeScanner scanner = BarcodeScanning.getClient();
-
-        imageAnalysis.setAnalyzer(
-                ((MainActivity) requireActivity()).getCameraExecutor(),
-                image -> {
-                    if (image.getImage() == null) {
-                        image.close();
-                        return;
-                    }
-
-                    InputImage inputImage = InputImage.fromMediaImage(
-                            image.getImage(),
-                            image.getImageInfo().getRotationDegrees()
-                    );
-
-                    scanner.process(inputImage)
-                            .addOnSuccessListener(barcodes -> {
-                                for (Barcode barcode : barcodes) {
-                                    if (barcode.getRawValue() != null && listener != null) {
-
-                                        listener.onBarcodeScanned(barcode.getRawValue());
-
-//                                        // oprește camera & închide dialog
-//                                        if (getActivity() instanceof MainActivity) {
-//                                            ((MainActivity) getActivity()).stopCamera();
-//                                        }
-
-                                        dismiss();
-                                        break;
-                                    }
-                                }
-                            })
-                            .addOnCompleteListener(task -> image.close());
-                }
-        );
-    }
-
 
 
     @Override

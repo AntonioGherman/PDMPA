@@ -46,6 +46,7 @@ dependencies {
     // ================= FIREBASE (JAVA SAFE) =================
     // ❗ FARA Firebase BOM
     implementation 'com.google.firebase:firebase-firestore:24.10.3'
+    implementation 'androidx.work:work-runtime:2.9.0'
 
     // ================= CAMERAX (BLOCAT STABIL) =================
     def camerax_version = "1.3.2"

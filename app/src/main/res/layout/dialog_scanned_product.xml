@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:background="@drawable/bg_dialog_rounded">
+
+    <!-- ================= HEADER ================= -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_check_circle"
+            app:tint="#2E7D32" />
+
+        <TextView
+            android:layout_marginStart="8dp"
+            android:text="Product Found!"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#2E7D32"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <!-- ================= PRODUCT CARD ================= -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="0dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="#E0E0E0"
+        android:layout_marginBottom="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- NAME + BADGE -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tvProductName"
+                    android:text="Wireless Bluetooth Headphones"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/tvStockBadge"
+                    android:layout_alignParentEnd="true"
+                    android:text="In Stock"
+                    android:textSize="11sp"
+                    android:textColor="#2E7D32"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="4dp"
+                    android:background="@drawable/bg_badge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </RelativeLayout>
+
+            <!-- CATEGORY -->
+            <TextView
+                android:id="@+id/tvCategory"
+                android:text="Electronics"
+                android:textSize="13sp"
+                android:textColor="#9E9E9E"
+                android:layout_marginTop="6dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- ================= STORE CONTAINER ================= -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        app:cardCornerRadius="14dp"
+        app:cardElevation="0dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="#E0E0E0">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="12dp"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_store"
+                app:tint="#9E9E9E" />
+
+            <TextView
+                android:id="@+id/tvStore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Downtown Store"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:textColor="#000000"/>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- ================= INFO BOXES ================= -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp">
+
+        <!-- YOUR STORE -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="0dp"
+            android:layout_marginEnd="8dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#E0E0E0">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <!-- ICON + LABEL -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_box"
+                        app:tint="#9E9E9E" />
+
+                    <TextView
+                        android:layout_marginStart="6dp"
+                        android:text="Your Store"
+                        android:textSize="12sp"
+                        android:textColor="#9E9E9E"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvQuantity"
+                    android:layout_marginTop="4dp"
+                    android:text="25 units"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/tvMinStock"
+                    android:text="Min: 20"
+                    android:textSize="12sp"
+                    android:textColor="#9E9E9E"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <!-- PRICE -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#E0E0E0">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <!-- ICON + LABEL -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_price"
+                        app:tint="#2E7D32" />
+
+                    <TextView
+                        android:layout_marginStart="6dp"
+                        android:text="Price"
+                        android:textSize="12sp"
+                        android:textColor="#9E9E9E"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvPrice"
+                    android:layout_marginTop="4dp"
+                    android:text="$79.99"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/tvCost"
+                    android:text="Cost: $45.00"
+                    android:textSize="12sp"
+                    android:textColor="#9E9E9E"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+
+
+    <!-- ================= DETAILS ================= -->
+
+    <!-- SKU -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="6dp">
+
+        <TextView
+            android:text="SKU:"
+            android:textSize="12sp"
+            android:textColor="#9E9E9E"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/tvSku"
+            android:text="WBH-001"
+            android:textSize="13sp"
+            android:textColor="#000000"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"/>
+    </LinearLayout>
+
+    <!-- Barcode -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="6dp">
+
+        <TextView
+            android:text="Barcode:"
+            android:textSize="12sp"
+            android:textColor="#9E9E9E"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/tvBarcode"
+            android:text="1234567890123"
+            android:textSize="13sp"
+            android:textColor="#000000"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"/>
+    </LinearLayout>
+
+    <!-- Supplier -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="6dp">
+
+        <TextView
+            android:text="Supplier:"
+            android:textSize="12sp"
+            android:textColor="#9E9E9E"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/tvSupplier"
+            android:text="TechSupply Co."
+            android:textSize="13sp"
+            android:textColor="#000000"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"/>
+    </LinearLayout>
+
+    <!-- ================= STOCK BAR ================= -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stock Status"
+        android:textSize="12sp"
+        android:textColor="#9E9E9E"/>
+
+    <ProgressBar
+        android:id="@+id/progressStock"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:progress="63"
+        android:progressTint="#2E7D32"
+        android:backgroundTint="#E0E0E0"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- ================= ACTIONS ================= -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <!-- SCAN ANOTHER -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnScanAgain"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_weight="1"
+            android:text="Scan Another"
+            android:textAllCaps="false"
+            android:textSize="13sp"
+            android:textColor="#000000"
+            app:icon="@drawable/ic_scan"
+            app:iconGravity="textStart"
+            app:iconPadding="6dp"
+            app:iconTint="#000000"
+            app:strokeWidth="1dp"
+            app:strokeColor="#E0E0E0"
+            app:backgroundTint="#FFFFFF"
+            app:cornerRadius="12dp" />
+
+        <!-- EDIT PRODUCT -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnEditProduct"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="Edit Product"
+            android:textAllCaps="false"
+            android:textSize="13sp"
+            android:textColor="#FFFFFF"
+            app:icon="@drawable/ic_edit"
+            app:iconGravity="textStart"
+            app:iconPadding="6dp"
+            app:iconTint="#FFFFFF"
+            app:backgroundTint="#000000"
+            app:cornerRadius="12dp" />
+    </LinearLayout>
+
+
+
+</LinearLayout>

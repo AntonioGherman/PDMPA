@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,10 +17,16 @@ import java.util.List;
 
 public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ViewHolder> {
 
-    private List<Product> products;
+    public interface OnDeleteClickListener {
+        void onDelete(Product product);
+    }
 
-    public StockAdapter(List<Product> products) {
+    private List<Product> products;
+    private OnDeleteClickListener deleteListener;
+
+    public StockAdapter(List<Product> products, OnDeleteClickListener listener) {
         this.products = products;
+        this.deleteListener = listener;
     }
 
     @NonNull
@@ -47,19 +54,21 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ViewHolder> 
         );
 
         applyBadge(h.tvBadge, p.getQuantity(), p.getMinStock());
+
+        h.btnDelete.setOnClickListener(v -> {
+            if (deleteListener != null) {
+                deleteListener.onDelete(p);
+            }
+        });
     }
 
     private StockStatus getStockStatus(int quantity, int minStock) {
 
         if (quantity == 0) return StockStatus.OUT_OF_STOCK;
-
         if (quantity < minStock) return StockStatus.LOW_STOCK;
-
         if (quantity < minStock + 20) return StockStatus.MEDIUM_STOCK;
-
         return StockStatus.IN_STOCK;
     }
-
 
     private void applyBadge(TextView badge, int qty, int min) {
 
@@ -72,22 +81,22 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ViewHolder> 
 
             case IN_STOCK:
                 text = "In Stock";
-                color = Color.parseColor("#2E7D32"); // green
+                color = Color.parseColor("#2E7D32");
                 break;
 
             case MEDIUM_STOCK:
                 text = "Medium";
-                color = Color.parseColor("#F9A825"); // yellow
+                color = Color.parseColor("#F9A825");
                 break;
 
             case LOW_STOCK:
                 text = "Low Stock";
-                color = Color.parseColor("#D32F2F"); // red
+                color = Color.parseColor("#D32F2F");
                 break;
 
             case OUT_OF_STOCK:
                 text = "Out of Stock";
-                color = Color.parseColor("#B71C1C"); // dark red
+                color = Color.parseColor("#B71C1C");
                 break;
 
             default:
@@ -98,15 +107,16 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ViewHolder> 
         badge.getBackground().setTint(color);
     }
 
-
     @Override
     public int getItemCount() {
         return products.size();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
+
         TextView tvName, tvSku, tvBadge,
                 tvYourStore, tvTotal, tvPrice, tvCategorySupplier;
+        ImageButton btnDelete;
 
         ViewHolder(View v) {
             super(v);
@@ -117,6 +127,7 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ViewHolder> 
             tvTotal = v.findViewById(R.id.tvTotal);
             tvPrice = v.findViewById(R.id.tvPrice);
             tvCategorySupplier = v.findViewById(R.id.tvCategorySupplier);
+            btnDelete = v.findViewById(R.id.btnDelete);
         }
     }
 }

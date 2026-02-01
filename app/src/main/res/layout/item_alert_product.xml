@@ -1,0 +1,108 @@
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="12dp"
+
+    app:cardCornerRadius="14dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="#FA7F7F"
+    app:cardElevation="0dp"
+    app:cardUseCompatPadding="false">
+
+    <LinearLayout
+        android:padding="14dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- NAME + BADGE -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tvName"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/tvBadge"
+                android:layout_alignParentEnd="true"
+                android:textSize="11sp"
+                android:textColor="#FFFEFE"
+                android:textStyle="bold"
+                android:padding="6dp"
+                android:background="@drawable/bg_badge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </RelativeLayout>
+
+        <!-- SKU -->
+        <TextView
+            android:id="@+id/tvSku"
+            android:textSize="12sp"
+            android:textColor="#9E9E9E"
+            android:layout_marginTop="2dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <View
+            android:layout_width="15dp"
+            android:layout_height="20dp"/>
+
+        <!-- DETAILS -->
+        <include
+            android:id="@+id/rowYourStore"
+            layout="@layout/view_key_value"/>
+
+        <include
+            android:id="@+id/rowMinRequired"
+            layout="@layout/view_key_value"/>
+
+        <include
+            android:id="@+id/rowSupplier"
+            layout="@layout/view_key_value"/>
+
+        <View
+            android:layout_width="15dp"
+            android:layout_height="1dp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="6dp"
+            android:background="#E0E0E0"/>
+
+        <!-- LOCATIONS -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:src="@drawable/ic_location"
+                android:layout_width="14dp"
+                android:layout_height="14dp"/>
+
+            <TextView
+                android:id="@+id/tvLocations"
+                android:layout_marginStart="6dp"
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <!-- RESTOCK -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRestock"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"/>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>
