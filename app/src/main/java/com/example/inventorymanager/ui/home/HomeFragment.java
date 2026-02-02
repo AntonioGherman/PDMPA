@@ -2,65 +2,140 @@ package com.example.inventorymanager.ui.home;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.inventorymanager.R;
+import com.example.inventorymanager.data.model.Product;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link HomeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.List;
+
 public class HomeFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private final List<Product> lowStock = new ArrayList<>();
+    private LowStockAdapter adapter;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private View cardProducts;
+    private View cardLowStock;
 
-    public HomeFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static HomeFragment newInstance(String param1, String param2) {
-        HomeFragment fragment = new HomeFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
+
+        View v = inflater.inflate(R.layout.fragment_home, container, false);
+
+        RecyclerView rv = v.findViewById(R.id.rvLowStock);
+        rv.setLayoutManager(new LinearLayoutManager(requireContext()));
+        adapter = new LowStockAdapter(lowStock);
+        rv.setAdapter(adapter);
+
+        cardProducts = v.findViewById(R.id.cardProducts);
+        cardLowStock = v.findViewById(R.id.cardLowStock);
+
+
+        loadData();
+        setupMetrics(v);
+
+        return v;
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+    private void loadData() {
+
+        FirebaseFirestore.getInstance()
+                .collection("products")
+                .addSnapshotListener((snap, e) -> {
+
+                    if (snap == null) return;
+
+                    lowStock.clear();
+
+                    int totalProducts = 0;
+                    int lowStockCount = 0;
+
+                    for (DocumentSnapshot d : snap) {
+
+                        Product p = d.toObject(Product.class);
+                        if (p == null) continue;
+
+                        totalProducts++;
+
+                        boolean isLow =
+                                p.getQuantity() < p.getMinStock()
+                                        || p.getQuantity() <= 0;
+
+                        if (isLow) {
+                            lowStock.add(p);
+                            lowStockCount++;
+                        }
+                    }
+
+                    adapter.notifyDataSetChanged();
+
+                    // 🔥 UPDATE METRICS
+                    updateMetrics(totalProducts, lowStockCount);
+                });
     }
+
+
+    private void updateMetrics(int totalProducts, int lowStockCount) {
+
+        setMetric(
+                cardProducts,
+                R.drawable.ic_box,
+                "Products",
+                String.valueOf(totalProducts)
+        );
+
+        setMetric(
+                cardLowStock,
+                R.drawable.ic_alert,
+                "Low Stock",
+                String.valueOf(lowStockCount)
+        );
+    }
+
+
+    private void setupMetrics(View v) {
+
+        setMetric(
+                v.findViewById(R.id.cardSales),
+                R.drawable.ic_sales,
+                "Sales (7d)",
+                "40"
+        );
+
+        setMetric(
+                v.findViewById(R.id.cardRevenue),
+                R.drawable.ic_price,
+                "Revenue",
+                "$1067"
+        );
+    }
+
+    private void setMetric(View card, int icon, String title, String value) {
+
+        ImageView iv = card.findViewById(R.id.icon);
+        TextView tvTitle = card.findViewById(R.id.tvTitle);
+        TextView tvValue = card.findViewById(R.id.tvValue);
+
+        iv.setImageResource(icon);
+        tvTitle.setText(title);
+        tvValue.setText(value);
+    }
+
 }

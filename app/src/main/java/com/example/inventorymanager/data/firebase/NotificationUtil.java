@@ -28,13 +28,6 @@ public class NotificationUtil {
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .setAutoCancel(true);
 
-//        if (ActivityCompat.checkSelfPermission(
-//                context,
-//                Manifest.permission.
-//        ) != PackageManager.PERMISSION_GRANTED) {
-//            return;
-//        }
-
         if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions

@@ -62,6 +62,51 @@
     </com.google.android.material.textfield.TextInputLayout>
 
 
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chipGroupStock"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:singleSelection="false">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipInStock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="In Stock"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            app:chipBackgroundColor="#3AB831"
+            android:checkable="true"
+            app:chipStrokeWidth="0dp"
+            />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Medium"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            app:chipBackgroundColor="#FF8E36"
+            app:chipStrokeWidth="0dp"
+            android:checkable="true"
+            />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipLow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Low Stock"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            app:chipBackgroundColor="#ED2222"
+            android:checkable="true"
+            app:chipStrokeWidth="0dp"
+            />
+
+    </com.google.android.material.chip.ChipGroup>
+
 
     <!-- Product list -->
     <androidx.recyclerview.widget.RecyclerView

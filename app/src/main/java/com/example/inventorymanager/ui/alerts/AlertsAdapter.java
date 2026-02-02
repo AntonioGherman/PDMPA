@@ -76,7 +76,7 @@ public class AlertsAdapter extends RecyclerView.Adapter<AlertsAdapter.VH> {
 
        // SUPPLIER
         h.tvSupplierKey.setText("Supplier:");
-        h.tvSupplierValue.setText("#PLACEHOLDER.SUPPLIER");
+        h.tvSupplierValue.setText(p.getSupplierName());
 
     }
 

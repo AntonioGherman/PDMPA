@@ -66,7 +66,7 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ViewHolder> 
 
         if (quantity == 0) return StockStatus.OUT_OF_STOCK;
         if (quantity < minStock) return StockStatus.LOW_STOCK;
-        if (quantity < minStock + 20) return StockStatus.MEDIUM_STOCK;
+        if (quantity < minStock + 10) return StockStatus.MEDIUM_STOCK;
         return StockStatus.IN_STOCK;
     }
 

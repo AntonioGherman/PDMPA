@@ -21,6 +21,10 @@ import com.example.inventorymanager.data.model.Product;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
+
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -36,6 +40,10 @@ public class StockFragment extends Fragment {
     private AutoCompleteTextView etCategory;
     private EditText etSearch;
     private View emptyState;
+
+    private ChipGroup chipGroupStock;
+    private Chip chipInStock, chipMedium, chipLow;
+
 
     private String selectedCategory = "All Categories";
 
@@ -90,6 +98,19 @@ public class StockFragment extends Fragment {
                     setupCategoriesFromProducts();
                     filterProducts();
                 });
+
+        chipGroupStock = v.findViewById(R.id.chipGroupStock);
+        chipInStock = v.findViewById(R.id.chipInStock);
+        chipMedium = v.findViewById(R.id.chipMedium);
+        chipLow = v.findViewById(R.id.chipLow);
+
+        ChipGroup.OnCheckedChangeListener chipListener =
+                (group, checkedId) -> filterProducts();
+
+        chipInStock.setOnCheckedChangeListener((b, c) -> filterProducts());
+        chipMedium.setOnCheckedChangeListener((b, c) -> filterProducts());
+        chipLow.setOnCheckedChangeListener((b, c) -> filterProducts());
+
 
         return v;
     }
@@ -153,7 +174,14 @@ public class StockFragment extends Fragment {
     private void filterProducts() {
 
         filteredProducts.clear();
+
         String query = etSearch.getText().toString().toLowerCase().trim();
+
+        boolean filterInStock = chipInStock.isChecked();
+        boolean filterMedium = chipMedium.isChecked();
+        boolean filterLow = chipLow.isChecked();
+
+        boolean anyChipChecked = filterInStock || filterMedium || filterLow;
 
         for (Product p : allProducts) {
 
@@ -170,14 +198,49 @@ public class StockFragment extends Fragment {
                             (p.getCategory() != null &&
                                     p.getCategory().equals(selectedCategory));
 
-            if ((query.isEmpty() || matchName || matchSku) && matchCategory) {
+            if (!(query.isEmpty() || matchName || matchSku)) continue;
+            if (!matchCategory) continue;
+
+            StockStatus status = getStatus(p);
+
+            boolean matchStock =
+                    !anyChipChecked ||
+                            (filterInStock && status == StockStatus.IN_STOCK) ||
+                            (filterMedium && status == StockStatus.MEDIUM_STOCK) ||
+                            (filterLow && status == StockStatus.LOW_STOCK) ||
+                            (filterLow && status == StockStatus.OUT_OF_STOCK);
+
+            if (matchStock) {
                 filteredProducts.add(p);
             }
         }
 
+        // 🔥 dacă NU e selectat niciun chip → sortăm descrescător după stock
+        if (!anyChipChecked) {
+            Collections.sort(filteredProducts,
+                    (a, b) -> Integer.compare(b.getQuantity(), a.getQuantity()));
+        }
+
         adapter.notifyDataSetChanged();
+
         emptyState.setVisibility(
                 filteredProducts.isEmpty() ? View.VISIBLE : View.GONE
         );
     }
+
+
+    private StockStatus getStatus(Product p) {
+
+        if (p.getQuantity() == 0)
+            return StockStatus.OUT_OF_STOCK;
+
+        if (p.getQuantity() < p.getMinStock())
+            return StockStatus.LOW_STOCK;
+
+        if (p.getQuantity() < p.getMinStock() + 10)
+            return StockStatus.MEDIUM_STOCK;
+
+        return StockStatus.IN_STOCK;
+    }
+
 }
